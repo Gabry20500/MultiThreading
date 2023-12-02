@@ -167,7 +167,7 @@ std::string playerToString(Player player) {
 void printBoard(const GameState& state) {
     system("cls || clear");
 
-    // Stampa della board
+    // Print the board
     std::cout << "-------------\n";
     for (const auto& row : state.board) {
         std::cout << "|";
@@ -197,7 +197,6 @@ void playGame() {
 
         if (currentState.currentPlayer == Player::X) {
             // AI's turn (Player X)
-            // Finding the best move for the AI using the minimax algorithm
             Move bestMove = findBestMove(currentState, 5);// Adjust depth as needed
 
             // Displaying the AI's best move
@@ -235,6 +234,7 @@ void playGame() {
     } else {
         std::cout << "Game ended in a draw!\n";
     }
+
 }
 
 
@@ -242,5 +242,7 @@ int main() {
     
     std::cout << "Welcome to the Tic-Tac-Toe game!\n";
     playGame(); // Start the game
+
+    system("pause");
     return 0;
 }
