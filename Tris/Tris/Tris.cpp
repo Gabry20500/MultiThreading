@@ -111,6 +111,7 @@ int evaluate(const GameState& state) {
 }
 
 int minimax(GameState state, int depth, bool maximizingPlayer) {
+
     if (isGameOver(state) || depth == 0) {
         return evaluate(state);
     }
@@ -141,9 +142,34 @@ int minimax(GameState state, int depth, bool maximizingPlayer) {
 Move findBestMove(const GameState& currentState, int depth) {
     std::vector<Move> possibleMoves = getPossibleMoves(currentState);
     int bestVal = INT_MIN;
-    Move bestMove{-1, -1};
+    Move bestMove{ -1, -1 };
 
-    for (const Move& move : possibleMoves) {
+    std::vector<std::future<int>> futures;
+    std::vector<int> features(possibleMoves.size());
+
+    for (size_t i = 0; i < possibleMoves.size(); ++i) {
+        futures.push_back(std::async(std::launch::async, [&currentState, &possibleMoves, i, depth]() {
+            GameState newState = currentState;
+            newState.board[possibleMoves[i].row][possibleMoves[i].col] = Player::X;
+            return minimax(newState, depth, false);
+            }));
+    }
+
+    for (size_t i = 0; i < futures.size(); ++i) {
+        features[i] = futures[i].get();
+    }
+
+
+    for (size_t i = 0; i < features.size(); ++i) {
+        if (features[i] > bestVal) {
+            bestVal = features[i];
+            bestMove = possibleMoves[i];
+        }
+    }
+
+    return bestMove;
+
+    /*for (const Move& move : possibleMoves) {
         GameState newState = currentState;
         newState.board[move.row][move.col] = Player::X;
 
@@ -153,9 +179,7 @@ Move findBestMove(const GameState& currentState, int depth) {
             bestVal = moveVal;
             bestMove = move;
         }
-    }
-
-    return bestMove;
+    }*/
 }
 
 std::string playerToString(Player player) {
