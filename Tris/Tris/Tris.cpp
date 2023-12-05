@@ -169,17 +169,6 @@ Move findBestMove(const GameState& currentState, int depth) {
 
     return bestMove;
 
-    /*for (const Move& move : possibleMoves) {
-        GameState newState = currentState;
-        newState.board[move.row][move.col] = Player::X;
-
-        int moveVal = minimax(newState, depth, false);
-
-        if (moveVal > bestVal) {
-            bestVal = moveVal;
-            bestMove = move;
-        }
-    }*/
 }
 
 std::string playerToString(Player player) {
